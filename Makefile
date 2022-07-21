@@ -2,11 +2,12 @@
 # Copyright (C) 2022 - Ethan Marshall
 .POSIX:
 
-SRC = xlseq.c
+SRC = xlseq.c patt.c
 OBJ = ${SRC:.c=.o}
 HDR = arg.h
 EXE = xlseq
 
+CFLAGS = -Wall -Wpedantic
 include config.mk
 
 ${EXE}: ${OBJ}
