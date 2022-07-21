@@ -9,7 +9,7 @@
 #include "xlseq.h"
 #include "arg.h"
 
-#define TRY_MATCH(TYPE, FUNC) if (!out[TYPE-1]) { out[TYPE-1] = !FUNC; }
+#define TRY_MATCH(TYPE, FUNC) if (match[TYPE-1]) { match[TYPE-1] = FUNC; }
 
 typedef enum {
 	/* unbounded ranges */
@@ -39,14 +39,14 @@ PatternType *
 _type_detect(const char *text)
 {
 	struct matcher_state state;
-	int out[UnrecognisedPattern];
+	int match[UnrecognisedPattern];
 	PatternType *buf;
 	int used = 0;
 	const char *ptr = text;
 	wchar_t rune;
 	int count, len = strlen(text);
 
-	memset(out, 0, sizeof(out));
+	memset(match, 1, sizeof(match));
 	do {
 		count = mbtowc(&rune, ptr, len-(ptr-text));
 		if (count < 0) {
@@ -59,9 +59,9 @@ _type_detect(const char *text)
 		TRY_MATCH(NumberPattern, number_pattern_match(rune));
 	} while (*ptr);
 
-	buf = malloc(sizeof(out));
+	buf = malloc(sizeof(match));
 	for (int i = 0; i < UnrecognisedPattern; i++) {
-		if (!out[i]) {
+		if (match[i]) {
 			buf[used++] = i+1;
 		}
 	}
