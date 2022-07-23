@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <inttypes.h>
+#include <errno.h>
 #include <wchar.h>
 
 #include "xlseq.h"
@@ -17,14 +19,16 @@ typedef enum {
 	NumberPattern,		/* common format of double */
 
 	/* bounded ranges */
-	/* DaysPattern, */
-	/* MonthsPattern, */
+	DaysPattern,
+	MonthsPattern,
 
 	UnrecognisedPattern	/* should never happen;
 				   used to terminate the buffer */
 } PatternType;
 
 struct matcher_state {
+	struct days_matcher_state days;
+	struct months_matcher_state months;
 };
 
 char *argv0;
@@ -47,6 +51,7 @@ _type_detect(const char *text)
 	int count, len = strlen(text);
 
 	memset(match, 1, sizeof(match));
+	memset(&state, 0, sizeof(state));
 	do {
 		count = mbtowc(&rune, ptr, len-(ptr-text));
 		if (count < 0) {
@@ -57,6 +62,8 @@ _type_detect(const char *text)
 
 		TRY_MATCH(StringPattern, string_pattern_match(rune));
 		TRY_MATCH(NumberPattern, number_pattern_match(rune));
+		TRY_MATCH(DaysPattern, days_pattern_match(rune, &state.days));
+		TRY_MATCH(MonthsPattern, months_pattern_match(rune, &state.months));
 	} while (*ptr);
 
 	buf = malloc(sizeof(match));
