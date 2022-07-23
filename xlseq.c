@@ -12,6 +12,7 @@
 #include "arg.h"
 
 #define TRY_MATCH(TYPE, FUNC) if (match[TYPE-1]) { match[TYPE-1] = FUNC; }
+#define MUST_BOUNDED(N) if (N <= 0) {fprintf(stderr, "%s: bounded sequence: need count (-n flag)\n", argv0); return 0;}
 
 typedef enum {
 	/* unbounded ranges */
@@ -108,10 +109,34 @@ type_detect(const char *first, const char *second)
 }
 
 int
+run_pattern(PatternType pat, int count, const char *in0, const char *in1)
+{
+	const char *iter;
+
+	switch (pat) {
+	case StringPattern:
+		MUST_BOUNDED(count);
+		break;
+	case NumberPattern:
+		MUST_BOUNDED(count);
+		break;
+	case DaysPattern:
+	case MonthsPattern:
+	case UnrecognisedPattern:
+		break;
+	default:
+		fprintf(stderr, "%s: unknown pattern type %d\n", argv0, pat);
+		return 2;
+	}
+
+	return 1;
+}
+
+int
 main(int argc, char **argv)
 {
 	PatternType type = UnrecognisedPattern;
-	int count = -1;
+	int subcount = 0, count = -1;
 
 	setlocale(LC_ALL, "");
 
@@ -131,4 +156,9 @@ main(int argc, char **argv)
 
 	if (type == UnrecognisedPattern)
 		type = type_detect(argv[argc-2], argv[argc-1]);
+
+	if (subcount)
+		count = abs(count-argc);
+
+	return run_pattern(type, count, argv[argc-2], argv[argc-1]);
 }
