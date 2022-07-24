@@ -3,6 +3,14 @@
 struct long_short {
 	const wchar_t *l, *s;
 };
+struct buffered_matcher_state {
+	wchar_t buf[BUFSIZ];
+	long bufpos;
+};
+int buffered_pattern_match(const wchar_t rune,
+			   struct buffered_matcher_state *state,
+			   const struct long_short *dataset,
+			   size_t datalen);
 
 /* string pattern */
 int string_pattern_match(const wchar_t rune);
@@ -20,11 +28,6 @@ static const struct long_short days[] = {
 	{L"saturday", L"sat"},
 	{L"sunday", L"sun"}
 };
-struct days_matcher_state {
-	wchar_t buf[BUFSIZ];
-	long bufpos;
-};
-int days_pattern_match(const wchar_t rune, struct days_matcher_state *state);
 
 /* months pattern */
 static const struct long_short months[] = {
@@ -41,8 +44,3 @@ static const struct long_short months[] = {
 	{L"november", L"nov"},
 	{L"december", L"dec"}
 };
-struct months_matcher_state {
-	wchar_t buf[BUFSIZ];
-	long bufpos;
-};
-int months_pattern_match(const wchar_t rune, struct months_matcher_state *state);

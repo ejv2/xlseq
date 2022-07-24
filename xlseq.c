@@ -9,6 +9,7 @@
 #include <wchar.h>
 
 #include "xlseq.h"
+#include "util.h"
 #include "arg.h"
 
 #define TRY_MATCH(TYPE, FUNC) if (match[TYPE-1]) { match[TYPE-1] = FUNC; }
@@ -28,8 +29,8 @@ typedef enum {
 } PatternType;
 
 struct matcher_state {
-	struct days_matcher_state days;
-	struct months_matcher_state months;
+	struct buffered_matcher_state days;
+	struct buffered_matcher_state months;
 };
 
 char *argv0;
@@ -66,8 +67,8 @@ _type_detect(const char *text)
 
 		TRY_MATCH(StringPattern, string_pattern_match(rune));
 		TRY_MATCH(NumberPattern, number_pattern_match(rune));
-		TRY_MATCH(DaysPattern, days_pattern_match(rune, &state.days));
-		TRY_MATCH(MonthsPattern, months_pattern_match(rune, &state.months));
+		TRY_MATCH(DaysPattern, buffered_pattern_match(rune, &state.days, days, LENGTH(days)));
+		TRY_MATCH(MonthsPattern, buffered_pattern_match(rune, &state.months, months, LENGTH(months)));
 	} while (*ptr);
 
 	buf = malloc(sizeof(match));
