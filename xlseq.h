@@ -3,6 +3,14 @@
 struct long_short {
 	const wchar_t *l, *s;
 };
+union sample_space {
+	struct {
+		const char *last;
+		const char *middle;
+		const char *first;	/* may be NULL if not enough samples */
+	} ordered;
+	const char *samples[3];
+};
 struct buffered_matcher_state {
 	wchar_t buf[BUFSIZ];
 	long bufpos;
@@ -13,7 +21,12 @@ int buffered_pattern_match(const wchar_t rune,
 			   size_t datalen);
 
 /* string pattern */
+struct string_pattern_state {
+	int common_check;
+	const char *common_end;	/* NULL if no common section discovered */
+};
 int string_pattern_match(const wchar_t rune);
+void string_pattern_run(struct string_pattern_state *state, union sample_space samples, int count);
 
 /* number pattern */
 int number_pattern_match(const wchar_t rune);

@@ -13,7 +13,7 @@
 #include "arg.h"
 
 #define TRY_MATCH(TYPE, FUNC) if (match[TYPE-1]) { match[TYPE-1] = FUNC; }
-#define MUST_BOUNDED(N) if (N <= 0) {fprintf(stderr, "%s: bounded sequence: need count (-n flag)\n", argv0); return 0;}
+#define MUST_BOUNDED(N) if (N <= 0) {fprintf(stderr, "%s: bounded sequence: need count (-n flag)\n", argv0); return 1;}
 
 typedef enum {
 	/* unbounded ranges */
@@ -32,6 +32,9 @@ struct matcher_state {
 	struct buffered_matcher_state days;
 	struct buffered_matcher_state months;
 };
+struct pattern_state {
+	struct string_pattern_state string;
+};
 
 char *argv0;
 
@@ -40,6 +43,7 @@ usage()
 {
 	fprintf(stderr, "%s: [-n count] -u\n", argv0);
 	fprintf(stderr, "-n:\titerate n times (default: unbounded)\n");
+	fprintf(stderr, "-N:\titerations do not include sample set\n");
 	fprintf(stderr, "-u:\tthis message\n");
 	exit(1);
 }
@@ -113,13 +117,15 @@ type_detect(const char *first, const char *second)
 }
 
 int
-run_pattern(PatternType pat, int count, const char *in0, const char *in1)
+run_pattern(PatternType pat, int count, union sample_space samples)
 {
-	const char *iter;
+	struct pattern_state state;
 
+	memset(&state, 0, sizeof(state));
 	switch (pat) {
 	case StringPattern:
 		MUST_BOUNDED(count);
+		string_pattern_run(&state.string, samples, count);
 		break;
 	case NumberPattern:
 		MUST_BOUNDED(count);
@@ -133,13 +139,15 @@ run_pattern(PatternType pat, int count, const char *in0, const char *in1)
 		return 2;
 	}
 
-	return 1;
+	return 0;
 }
 
 int
 main(int argc, char **argv)
 {
+	union sample_space samples;
 	PatternType type = UnrecognisedPattern;
+	int i, success;
 	int subcount = 0, count = -1;
 
 	setlocale(LC_ALL, "");
@@ -161,7 +169,6 @@ main(int argc, char **argv)
 		fprintf(stderr, "%s: unknown flag '%c'\n", argv0, ARGC());
 		return 1;
 	} ARGEND;
-
 	if (argc < 2) {
 		fprintf(stderr, "%s: need pattern of at least two items\n", argv0);
 		return 1;
@@ -173,5 +180,24 @@ main(int argc, char **argv)
 	if (subcount)
 		count = abs(count-argc);
 
-	return run_pattern(type, count, argv[argc-2], argv[argc-1]);
+	if (subcount && count <= 0) {
+		fprintf(stderr, "%s: net count %d smaller than sequence sample\n", argv0, count);
+		return 1;
+	}
+
+	samples = (union sample_space){
+		.samples = {
+			argv[argc-1],
+			argv[argc-2],
+			(argc > 2) ? argv[argc-3] : NULL
+		}
+	};
+
+	/* print sample set */
+	for (i = 0; i < argc; i++) {
+		printf("%s ", argv[i]);
+	}
+	success = run_pattern(type, count, samples);
+	putchar('\n');
+	return success;
 }
