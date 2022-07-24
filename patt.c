@@ -1,6 +1,7 @@
 /* See LICENSE for copyright and license details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <wchar.h>
 #include <string.h>
 #include <wctype.h>
@@ -17,10 +18,11 @@ string_pattern_match(const wchar_t rune)
 void
 string_pattern_run(struct string_pattern_state *state, union sample_space samples, int count)
 {
-	int i, len;
+	int i;
+	long suffix;
 	size_t ind;
+	char *endptr, *buf;
 	const char *walk;
-	const char *pref, *suff;
 
 	if (!state->common_end && !state->common_check) {
 		for (walk = samples.ordered.last; *walk; walk++) {
@@ -36,16 +38,28 @@ string_pattern_run(struct string_pattern_state *state, union sample_space sample
 		state->common_check = 1;
 	}
 
-	if (samples.samples[2])
-		len = 3;
-	else
-		len = 2;
-
 	if (state->common_end && *state->common_end) {
 		state->common_end++;
+		suffix = strtol(state->common_end, &endptr, 10);
+		buf = calloc(sizeof(char), state->common_end - samples.ordered.last + 1);
+		if (!buf) {
+			perror("buf allocation");
+			return;
+		}
+		strncpy(buf, samples.ordered.last, state->common_end - samples.ordered.last);
+
+		for (int i = 0; i <= count; i++) {
+			if (suffix) {
+				printf("%s%ld%s ", buf, suffix, endptr);
+				suffix++;
+			} else {
+				printf("%s%s ", buf, endptr);
+			}
+		}
+		free(buf);
 	} else {
 		for (i = 0; i < count; i++) {
-			printf("%s ", samples.samples[len-(i%len)-1]);
+			printf("%s ", samples.samples[1-i%2]);
 		}
 	}
 }
