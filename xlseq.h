@@ -26,7 +26,7 @@ struct string_pattern_state {
 	const char *common_end;	/* NULL if no common section discovered */
 };
 int string_pattern_match(const wchar_t rune);
-void string_pattern_run(struct string_pattern_state *state, union sample_space samples, int count);
+void string_pattern_run(union sample_space samples, int count);
 
 /* number pattern */
 int number_pattern_match(const wchar_t rune);

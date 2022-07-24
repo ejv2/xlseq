@@ -32,9 +32,6 @@ struct matcher_state {
 	struct buffered_matcher_state days;
 	struct buffered_matcher_state months;
 };
-struct pattern_state {
-	struct string_pattern_state string;
-};
 
 char *argv0;
 
@@ -119,13 +116,10 @@ type_detect(const char *first, const char *second)
 int
 run_pattern(PatternType pat, int count, union sample_space samples)
 {
-	struct pattern_state state;
-
-	memset(&state, 0, sizeof(state));
 	switch (pat) {
 	case StringPattern:
 		MUST_BOUNDED(count);
-		string_pattern_run(&state.string, samples, count);
+		string_pattern_run(samples, count);
 		break;
 	case NumberPattern:
 		MUST_BOUNDED(count);

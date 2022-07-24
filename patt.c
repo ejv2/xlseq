@@ -16,41 +16,39 @@ string_pattern_match(const wchar_t rune)
 }
 
 void
-string_pattern_run(struct string_pattern_state *state, union sample_space samples, int count)
+string_pattern_run(union sample_space samples, int count)
 {
 	int i;
 	long suffix;
 	size_t ind;
+	const char *cend;
 	char *endptr, *buf;
 	const char *walk;
 
-	if (!state->common_end && !state->common_check) {
-		for (walk = samples.ordered.last; *walk; walk++) {
-			ind = walk-samples.ordered.last;
-			if (!samples.ordered.middle[ind])
-				break;
-			else if (samples.ordered.middle[ind] != *walk) {
-				break;
-			}
-
-			state->common_end = walk;
+	for (walk = samples.ordered.last; *walk; walk++) {
+		ind = walk-samples.ordered.last;
+		if (!samples.ordered.middle[ind])
+			break;
+		else if (samples.ordered.middle[ind] != *walk) {
+			break;
 		}
-		state->common_check = 1;
+
+		cend = walk;
 	}
 
-	if (state->common_end && *state->common_end) {
-		state->common_end++;
-		suffix = strtol(state->common_end, &endptr, 10);
-		buf = calloc(sizeof(char), state->common_end - samples.ordered.last + 1);
+	if (cend && *cend) {
+		cend++;
+		suffix = strtol(cend, &endptr, 10);
+		buf = calloc(sizeof(char), cend - samples.ordered.last + 1);
 		if (!buf) {
 			perror("buf allocation");
 			return;
 		}
-		strncpy(buf, samples.ordered.last, state->common_end - samples.ordered.last);
+		strncpy(buf, samples.ordered.last, cend - samples.ordered.last);
 
 		for (int i = 0; i <= count; i++) {
 			if (suffix) {
-				printf("%s%ld%s ", buf, ++suffix, endptr);
+				printf("%s%ld%s ", buf, suffix++, endptr);
 			} else {
 				printf("%s%s ", buf, endptr);
 			}
