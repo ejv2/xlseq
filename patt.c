@@ -50,8 +50,7 @@ string_pattern_run(struct string_pattern_state *state, union sample_space sample
 
 		for (int i = 0; i <= count; i++) {
 			if (suffix) {
-				printf("%s%ld%s ", buf, suffix, endptr);
-				suffix++;
+				printf("%s%ld%s ", buf, ++suffix, endptr);
 			} else {
 				printf("%s%s ", buf, endptr);
 			}
