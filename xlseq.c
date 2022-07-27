@@ -38,9 +38,9 @@ char *argv0;
 void
 usage()
 {
-	fprintf(stderr, "%s: [-n count] -u\n", argv0);
+	fprintf(stderr, "%s: [-cn count] -u\n", argv0);
+	fprintf(stderr, "-c:\tcontinue pattern for n iterations (default: unbounded)\n");
 	fprintf(stderr, "-n:\titerate n times (default: unbounded)\n");
-	fprintf(stderr, "-N:\titerations do not include sample set\n");
 	fprintf(stderr, "-u:\tthis message\n");
 	exit(1);
 }
@@ -149,13 +149,13 @@ main(int argc, char **argv)
 
 	ARGBEGIN {
 	case 'n':
+		subcount = 1;
+		/* FALLTHROUGH */
+	case 'c':
 		errno = 0;
 		count = strtoimax(EARGF(usage()), NULL, 10);
 		if (count == 0 || errno != 0)
 			usage();
-		break;
-	case 'N':
-		subcount = 1;
 		break;
 	case 'u':
 		usage();
