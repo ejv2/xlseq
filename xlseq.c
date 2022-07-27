@@ -40,7 +40,7 @@ usage()
 {
 	fprintf(stderr, "%s: [-cn count] -u\n", argv0);
 	fprintf(stderr, "-c:\tcontinue pattern for n iterations (default: unbounded)\n");
-	fprintf(stderr, "-n:\titerate n times (default: unbounded)\n");
+	fprintf(stderr, "-n:\tshow n results in total (default: unbounded)\n");
 	fprintf(stderr, "-u:\tthis message\n");
 	exit(1);
 }
