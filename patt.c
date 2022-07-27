@@ -34,7 +34,7 @@ string_pattern_run(union sample_space samples, int count)
 	int i;
 	long suffix;
 	size_t ind;
-	const char *cend;
+	const char *cend = NULL;
 	char *endptr, *buf;
 	const char *walk;
 
@@ -59,9 +59,9 @@ string_pattern_run(union sample_space samples, int count)
 		}
 		strncpy(buf, samples.ordered.last, cend - samples.ordered.last);
 
-		for (int i = 0; i <= count; i++) {
+		for (int i = 0; i < count; i++) {
 			if (suffix) {
-				printf("%s%ld%s ", buf, suffix++, endptr);
+				printf("%s%ld%s ", buf, ++suffix, endptr);
 			} else {
 				printf("%s%s ", buf, endptr);
 			}
