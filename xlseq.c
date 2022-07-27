@@ -172,12 +172,12 @@ main(int argc, char **argv)
 	if (type == UnrecognisedPattern)
 		type = type_detect(argv[argc-2], argv[argc-1]);
 
-	if (subcount)
-		count = abs(count-argc);
-
-	if (subcount && count <= 0) {
-		fprintf(stderr, "%s: net count %d smaller than sequence sample\n", argv0, count);
-		return 1;
+	if (subcount) {
+		count = count-argc;
+		if (count <= 0) {
+			fprintf(stderr, "%s: net count %d smaller than sequence sample\n", argv0, count);
+			return 1;
+		}
 	}
 
 	samples = (union sample_space){
