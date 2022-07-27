@@ -30,6 +30,7 @@ void string_pattern_run(union sample_space samples, int count);
 
 /* number pattern */
 int number_pattern_match(const wchar_t rune);
+void number_pattern_run(union sample_space samples, int count, int ind);
 
 /* days pattern */
 static const struct long_short days[] = {

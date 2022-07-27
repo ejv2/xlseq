@@ -4,10 +4,23 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <string.h>
+#include <inttypes.h>
+#include <math.h>
 #include <wctype.h>
 
 #include "util.h"
 #include "xlseq.h"
+
+/* abstraction over mathematical sequence
+ * sequence is defined as ax^n ... nx^1 + c
+ * highest supported order is x^3, although it could (in theory) be extended to
+ * x^255 with the current design
+ */
+typedef struct {
+	unsigned char order;
+	int coff[3];	/* coefficients in LE order (coff[0] is coefficient of x^0) */
+			/* coff[0] is therefore the constant term (nx^0 === n === c) */
+} NumSeq;
 
 int
 string_pattern_match(const wchar_t rune)
@@ -65,6 +78,43 @@ int
 number_pattern_match(const wchar_t rune)
 {
 	return iswdigit(rune) || rune == '.';
+}
+
+void
+number_pattern_run(union sample_space samples, int count, int ind)
+{
+	NumSeq seq;
+	long start = strtol(samples.ordered.last, NULL, 10);
+	long work;
+	int cur = start;
+	int prev = strtoimax(samples.ordered.middle, NULL, 10);
+	int startind;
+
+	if (samples.ordered.first)
+		startind = ind + 3;
+	else
+		startind = ind + 2;
+
+	if (cur == prev) {
+		seq.order = 0;
+		seq.coff[0] = cur;
+	} else if (!samples.ordered.first) {
+		seq.order = 1;
+		seq.coff[1] = cur - prev;
+		seq.coff[0] = cur - ((ind + 1) * seq.coff[1]);
+	} else {
+		for (seq.order = 0; cur != prev && seq.order < 4; seq.order++) {
+		}
+	}
+
+	for (int i = 0; i < count; i++) {
+		work = 0;
+		for (int ord = 0; ord <= seq.order; ord++) {
+			work += pow(startind, ord) * seq.coff[ord];
+		}
+		printf("%ld ", work);
+		startind++;
+	}
 }
 
 int

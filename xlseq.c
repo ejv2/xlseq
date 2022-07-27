@@ -114,7 +114,7 @@ type_detect(const char *first, const char *second)
 }
 
 int
-run_pattern(PatternType pat, int count, union sample_space samples)
+run_pattern(PatternType pat, int count, int startind, union sample_space samples)
 {
 	switch (pat) {
 	case StringPattern:
@@ -123,6 +123,7 @@ run_pattern(PatternType pat, int count, union sample_space samples)
 		break;
 	case NumberPattern:
 		MUST_BOUNDED(count);
+		number_pattern_run(samples, count, startind);
 		break;
 	case DaysPattern:
 	case MonthsPattern:
@@ -141,7 +142,7 @@ main(int argc, char **argv)
 {
 	union sample_space samples;
 	PatternType type = UnrecognisedPattern;
-	int i, success;
+	int i, startind, success;
 	int subcount = 0, count = -1;
 
 	setlocale(LC_ALL, "");
@@ -186,12 +187,13 @@ main(int argc, char **argv)
 			(argc > 2) ? argv[argc-3] : NULL
 		}
 	};
+	startind = (argc > 2) ? argc-2 : argc-1;
 
 	/* print sample set */
 	for (i = 0; i < argc; i++) {
 		printf("%s ", argv[i]);
 	}
-	success = run_pattern(type, count, samples);
+	success = run_pattern(type, count, startind, samples);
 	putchar('\n');
 	return success;
 }
