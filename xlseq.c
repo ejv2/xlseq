@@ -160,6 +160,9 @@ main(int argc, char **argv)
 	case 'u':
 		usage();
 		/* NOTREACHED */
+	case 'v':
+		printf("xlseq v%s\n", VERSION);
+		return 1;
 	default:
 		fprintf(stderr, "%s: unknown flag '%c'\n", argv0, ARGC());
 		return 1;
