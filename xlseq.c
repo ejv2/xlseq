@@ -126,7 +126,11 @@ run_pattern(PatternType pat, int count, int startind, union sample_space samples
 		number_pattern_run(samples, count, startind);
 		break;
 	case DaysPattern:
+		buffered_pattern_run(samples, count, days, LENGTH(days));
+		break;
 	case MonthsPattern:
+		buffered_pattern_run(samples, count, months, LENGTH(months));
+		break;
 	case UnrecognisedPattern:
 		break;
 	default:

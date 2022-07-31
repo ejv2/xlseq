@@ -137,3 +137,50 @@ buffered_pattern_match(const wchar_t rune, struct buffered_matcher_state *state,
 
 	return 0;
 }
+
+void
+buffered_pattern_run(union sample_space samples, int count,
+		     const struct long_short *dataset, size_t datalen)
+{
+	int i;
+	const wchar_t *out;
+	const char *work = samples.ordered.last;
+	const struct long_short *cur;
+	int uselong;
+	int rlen, rind = 0;
+	unsigned int dind = 0;
+	int arglen = strlen(samples.ordered.last);
+	wchar_t decode[arglen];
+
+	memset(decode, 0, sizeof(wchar_t) * arglen);
+	do {
+		rlen = mbtowc(decode + rind, work, arglen);
+		if (rlen < 0) {
+			fprintf(stderr, "xlseq: invalid text encoding\n");
+			return;
+		}
+		work += rlen;
+		rind++;
+	} while (*work);
+	decode[rind] = 0;
+
+	for (i = 0; i < datalen; i++) {
+		cur = &dataset[i];
+		if (wcscmp(cur->l, decode) == 0) {
+			uselong = 1;
+			break;
+		} else if (wcscmp(cur->s, decode) == 0) {
+			uselong = 0;
+			break;
+		}
+	}
+	dind = i;
+	if (count <= 0)
+		count = datalen - 1 - (cur - dataset);
+
+	for (i = 1; i <= count; i++) {
+		out = (uselong) ? dataset[(dind + i) % datalen].l :
+				  dataset[(dind + i) % datalen].s;
+		printf("%ls ", out);
+	}
+}
