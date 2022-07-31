@@ -19,4 +19,12 @@ ${EXE}: ${OBJ}
 clean:
 	rm -f ${EXE} ${OBJ}
 
-.PHONY: clean
+install: $(EXE)
+	mkdir -p ${DESTDIR}$(PREFIX)/bin
+	cp -f $(EXE) $(DESTDIR)$(PREFIX)/bin
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/$(EXE)
+
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/$(EXE)
+
+.PHONY: clean install uninstall
