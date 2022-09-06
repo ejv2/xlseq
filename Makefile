@@ -2,9 +2,9 @@
 # Copyright (C) 2022 - Ethan Marshall
 .POSIX:
 
-SRC = xlseq.c patt.c
+SRC = xlseq.c patt.c sspec.c
 OBJ = ${SRC:.c=.o}
-HDR = arg.h
+HDR = arg.h sspec.h
 EXE = xlseq
 
 CFLAGS = -Wall -Wpedantic

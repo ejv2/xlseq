@@ -123,7 +123,7 @@ run_pattern(PatternType pat, int count, int startind, union sample_space samples
 		break;
 	case NumberPattern:
 		MUST_BOUNDED(count);
-		number_pattern_run(samples, count, startind);
+		number_pattern_run(samples, count);
 		break;
 	case DaysPattern:
 		buffered_pattern_run(samples, count, days, LENGTH(days));

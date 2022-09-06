@@ -9,18 +9,8 @@
 #include <wctype.h>
 
 #include "util.h"
+#include "sspec.h"
 #include "xlseq.h"
-
-/* abstraction over mathematical sequence
- * sequence is defined as ax^n ... nx^1 + c
- * highest supported order is x^3, although it could (in theory) be extended to
- * x^255 with the current design
- */
-typedef struct {
-	unsigned char order;
-	int coff[3];	/* coefficients in LE order (coff[0] is coefficient of x^0) */
-			/* coff[0] is therefore the constant term (nx^0 === n === c) */
-} NumSeq;
 
 int
 string_pattern_match(const wchar_t rune)
@@ -81,39 +71,27 @@ number_pattern_match(const wchar_t rune)
 }
 
 void
-number_pattern_run(union sample_space samples, int count, int ind)
+number_pattern_run(union sample_space samples, int count)
 {
-	NumSeq seq;
-	long start = strtol(samples.ordered.last, NULL, 10);
-	long work;
-	int cur = start;
-	int prev = strtoimax(samples.ordered.middle, NULL, 10);
-	int startind;
+	sspec_t *sq;
+	int i;
+	int scount = (samples.ordered.first) ? 3 : 2;
+	long isamp[scount], obuf[count];
 
-	if (samples.ordered.first)
-		startind = ind + 3;
-	else
-		startind = ind + 2;
-
-	if (cur == prev) {
-		seq.order = 0;
-		seq.coff[0] = cur;
-	} else if (!samples.ordered.first) {
-		seq.order = 1;
-		seq.coff[1] = cur - prev;
-		seq.coff[0] = cur - ((ind + 1) * seq.coff[1]);
-	} else {
-		for (seq.order = 0; cur != prev && seq.order < 4; seq.order++) {
-		}
+	for (i = 0; i < scount; i++) {
+		isamp[i] = strtol(samples.samples[scount - i - 1], NULL, 10);
 	}
 
-	for (int i = 0; i < count; i++) {
-		work = 0;
-		for (int ord = 0; ord <= seq.order; ord++) {
-			work += pow(startind, ord) * seq.coff[ord];
-		}
-		printf("%ld ", work);
-		startind++;
+	sq = sspec_analyze(isamp, scount);
+	if (!sq) {
+		fputs("xlseq: no valid arithmetic sequence determined\n", stderr);
+		return;
+	}
+
+	sspec_continue(sq, obuf, count);
+
+	for (i = 0; i < count; i++) {
+		printf("%ld ", obuf[i]);
 	}
 }
 
