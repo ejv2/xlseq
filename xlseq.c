@@ -42,6 +42,7 @@ usage()
 	fprintf(stderr, "-c:\tcontinue pattern for n iterations (default: unbounded)\n");
 	fprintf(stderr, "-n:\tshow n results in total (default: unbounded)\n");
 	fprintf(stderr, "-u:\tthis message\n");
+	fprintf(stderr, "-h:\tthis message\n");
 	exit(1);
 }
 
@@ -162,6 +163,7 @@ main(int argc, char **argv)
 		if (count == 0 || errno != 0)
 			usage();
 		break;
+	case 'h':
 	case 'u':
 		usage();
 		/* NOTREACHED */
