@@ -114,7 +114,7 @@ type_detect(const char *first, const char *second)
 }
 
 int
-run_pattern(PatternType pat, int count, int startind, union sample_space samples)
+run_pattern(PatternType pat, int count, int startind, union sample_space samples, struct full_sample full)
 {
 	switch (pat) {
 	case StringPattern:
@@ -123,7 +123,7 @@ run_pattern(PatternType pat, int count, int startind, union sample_space samples
 		break;
 	case NumberPattern:
 		MUST_BOUNDED(count);
-		number_pattern_run(samples, count);
+		number_pattern_run(full, count);
 		break;
 	case DaysPattern:
 		buffered_pattern_run(samples, count, days, LENGTH(days));
@@ -144,6 +144,7 @@ run_pattern(PatternType pat, int count, int startind, union sample_space samples
 int
 main(int argc, char **argv)
 {
+	struct full_sample full;
 	union sample_space samples;
 	PatternType type = UnrecognisedPattern;
 	int i, startind, success;
@@ -187,6 +188,10 @@ main(int argc, char **argv)
 		}
 	}
 
+	full = (struct full_sample){
+		.samples = argv,
+		.len = argc
+	};
 	samples = (union sample_space){
 		.samples = {
 			argv[argc-1],
@@ -200,7 +205,7 @@ main(int argc, char **argv)
 	for (i = 0; i < argc; i++) {
 		printf("%s ", argv[i]);
 	}
-	success = run_pattern(type, count, startind, samples);
+	success = run_pattern(type, count, startind, samples, full);
 	putchar('\n');
 	return success;
 }

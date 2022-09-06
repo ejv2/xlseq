@@ -3,6 +3,10 @@
 struct long_short {
 	const wchar_t *l, *s;
 };
+struct full_sample {
+	char **samples;
+	size_t len;
+};
 union sample_space {
 	struct {
 		const char *last;
@@ -33,7 +37,7 @@ void string_pattern_run(union sample_space samples, int count);
 
 /* number pattern */
 int number_pattern_match(const wchar_t rune);
-void number_pattern_run(union sample_space samples, int count);
+void number_pattern_run(struct full_sample samples, int count);
 
 /* days pattern */
 static const struct long_short days[] = {

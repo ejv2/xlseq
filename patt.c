@@ -71,18 +71,18 @@ number_pattern_match(const wchar_t rune)
 }
 
 void
-number_pattern_run(union sample_space samples, int count)
+number_pattern_run(struct full_sample samples, int count)
 {
 	sspec_t *sq;
 	int i;
-	int scount = (samples.ordered.first) ? 3 : 2;
-	long isamp[scount], obuf[count];
+	long isamp[samples.len], obuf[count];
 
-	for (i = 0; i < scount; i++) {
-		isamp[i] = strtol(samples.samples[scount - i - 1], NULL, 10);
+	for (i = 0; i < samples.len; i++) {
+		isamp[i] = strtol(samples.samples[i], NULL, 10);
+		/* printf("%d: %ld\n", i, isamp[i]); */
 	}
 
-	sq = sspec_analyze(isamp, scount);
+	sq = sspec_analyze(isamp, samples.len);
 	if (!sq) {
 		fputs("xlseq: no valid arithmetic sequence determined\n", stderr);
 		return;
