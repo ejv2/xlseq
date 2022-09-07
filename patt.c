@@ -144,10 +144,10 @@ buffered_pattern_run(union sample_space samples, int count,
 
 	for (i = 0; i < datalen; i++) {
 		cur = &dataset[i];
-		if (wcscmp(cur->l, decode) == 0) {
+		if (wcscasecmp(cur->l, decode) == 0) {
 			uselong = 1;
 			break;
-		} else if (wcscmp(cur->s, decode) == 0) {
+		} else if (wcscasecmp(cur->s, decode) == 0) {
 			uselong = 0;
 			break;
 		}
