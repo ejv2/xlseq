@@ -21,8 +21,10 @@ clean:
 
 install: $(EXE)
 	mkdir -p ${DESTDIR}$(PREFIX)/bin
+	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	cp -f $(EXE) $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/$(EXE)
+	cp -f ${EXE}.1 ${DESTDIR}${MANPREFIX}/man1/${EXE}.1
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/$(EXE)
