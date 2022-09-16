@@ -1,0 +1,43 @@
+.TH XLSEQ 1 xlseq-1.0.0
+.SH NAME
+xlseq - continue a sequence, Excel style
+.SH SYNOPSIS
+.SY
+.OP \-cn count
+sequence
+.YS
+.SH DESCRIPTION
+.P
+.B xlseq
+takes a sequence as command line parameters separated by whitespace
+and attempts to detect a correlation and continue the sequence.
+Sequences can be continued as far as is possible (bounded sequence) or
+as many as specified (unbounded sequence).
+.P
+Output is printed whitespace delimited on a single line, which means
+it is suitable for use in shell loops and is easy to parse using
+.BR awk (1)
+or
+.BR cut (1).
+.SH EXAMPLES
+.SS COUNT TO TEN
+.EX
+$ xlseq -n10 1 2 3
+.EE
+.SS SHOW SQUARE NUMBERS
+.EX
+$ xlseq -c5 1 4 9 16
+.EE
+.SS DETECT COMPLEX SEQUENCES
+This is the sequence for 3x^2 + 2x + 5
+.EX
+$ xlseq -c10 10 33 92 205 390
+.EE
+.SS SHELL LOOP
+.EX
+$ echo "The days of the week are"
+$ for day in $(xlseq monday tuesday)
+  do
+	echo "$day"
+  done
+.EE
