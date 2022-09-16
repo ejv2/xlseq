@@ -76,10 +76,23 @@ number_pattern_run(struct full_sample samples, int count)
 	sspec_t *sq;
 	int i;
 	long isamp[samples.len], obuf[count];
+	long diff;
 
 	for (i = 0; i < samples.len; i++) {
 		isamp[i] = strtol(samples.samples[i], NULL, 10);
 		/* printf("%d: %ld\n", i, isamp[i]); */
+	}
+
+	/*
+	 * As a special case, do a naive extrapolation over two elements if
+	 * they are the only two provided, as sspec requires at least three
+	 */
+	if (samples.len == 2) {
+		diff = isamp[1] - isamp[0];
+		for (i = 1; i <= count; i++) {
+			printf("%ld ", isamp[1] + (i * diff));
+		}
+		return;
 	}
 
 	sq = sspec_analyze(isamp, samples.len);
