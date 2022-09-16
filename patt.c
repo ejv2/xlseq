@@ -67,7 +67,7 @@ string_pattern_run(union sample_space samples, int count)
 int
 number_pattern_match(const wchar_t rune)
 {
-	return iswdigit(rune) || rune == '.';
+	return iswdigit(rune) || rune == '.' || rune == '-';
 }
 
 void
