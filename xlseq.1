@@ -19,6 +19,24 @@ it is suitable for use in shell loops and is easy to parse using
 .BR awk (1)
 or
 .BR cut (1).
+.SH OPTIONS
+.TP
+.B \-c
+Continue sequence for
+.I count
+iterations
+.TP
+.B \-n
+Get
+.I count
+results in total. Count must be greater than the length of the initial
+set given, else an error is returned.
+.TP
+.B \-u
+Show help
+.TP
+.B \-h
+Show help
 .SH EXAMPLES
 .SS COUNT TO TEN
 .EX
@@ -41,3 +59,7 @@ $ for day in $(xlseq monday tuesday)
 	echo "$day"
   done
 .EE
+.SH SEE ALSO
+.BR seq (1)
+.BR shuf (1)
+.BR bc (1)
