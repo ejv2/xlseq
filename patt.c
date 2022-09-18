@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include <math.h>
 #include <wctype.h>
+#include <time.h>
 
 #include "util.h"
 #include "sspec.h"
@@ -106,6 +107,72 @@ number_pattern_run(struct full_sample samples, int count)
 
 	for (i = 0; i < count; i++) {
 		printf("%ld ", obuf[i]);
+	}
+}
+
+/* NOTE: not a normal matcher - called once and overrides any other matches */
+int
+date_pattern_match(const char *in)
+{
+	int i, any = 0;
+	time_t ts;
+	struct tm tm;
+	const char *cmp;
+
+	ts = time(NULL);
+	tm = *localtime(&ts);
+	for (i = 0; i < LENGTH(datefmt); i++) {
+		cmp = strptime(in, datefmt[i], &tm);
+		if (cmp && *cmp == 0) {
+			any++;
+			break;
+		}
+	}
+
+	return any;
+}
+
+void
+date_pattern_run(union sample_space samples, int count)
+{
+	int i;
+	time_t ts, diff, start;
+	struct tm tm0, tm1, tmp;
+	int parsed0 = 0, parsed1 = 0;
+	const char *cmp;
+
+	ts = time(NULL);
+	tm0 = tm1 = *localtime(&ts);
+
+	for (i = 0; i < LENGTH(datefmt); i++) {
+		if (!parsed0) {
+			cmp = strptime(samples.ordered.middle, datefmt[i], &tm0);
+			if (cmp && *cmp == 0) {
+				parsed0++;
+			}
+		}
+
+		if (!parsed1) {
+			cmp = strptime(samples.ordered.last, datefmt[i], &tm1);
+			if (cmp && *cmp == 0) {
+				parsed1++;
+			}
+		}
+	}
+	if (!parsed0 || !parsed1) {
+		fprintf(stderr,
+			"xlseq: date_pattern_match didn't catch bad format(s)\ntm0:\t'%s'\ntm1:\t'%s'\n",
+			samples.ordered.last, samples.ordered.middle);
+		abort();
+	}
+
+	start = mktime(&tm1);
+	diff = start - mktime(&tm0);
+
+	for (i = 0; i < count; i++) {
+		start += diff;
+		tmp = *localtime(&start);
+		printf("%d-%02d-%02d %02d:%02d:%02d ", tmp.tm_year + 1900, tmp.tm_mon + 1, tmp.tm_mday, tmp.tm_hour, tmp.tm_min, tmp.tm_sec);
 	}
 }
 

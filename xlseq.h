@@ -39,6 +39,17 @@ void string_pattern_run(union sample_space samples, int count);
 int number_pattern_match(const wchar_t rune);
 void number_pattern_run(struct full_sample samples, int count);
 
+/* date pattern */
+static const char *datefmt[] = {
+	"%T",
+	"%H:%M",
+	"%I:%M %p",
+	"%r",
+	"%F",
+};
+int date_pattern_match(const char *in);
+void date_pattern_run(union sample_space samples, int count);
+
 /* days pattern */
 static const struct long_short days[] = {
 	{L"monday", L"mon"},

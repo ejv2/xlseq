@@ -19,6 +19,7 @@ typedef enum {
 	/* unbounded ranges */
 	StringPattern = 1,	/* common prefix of arbitrary type */
 	NumberPattern,		/* common format of double */
+	DatePattern,		/* common format of struct tm * */
 
 	/* bounded ranges */
 	DaysPattern,
@@ -72,6 +73,7 @@ _type_detect(const char *text)
 		TRY_MATCH(DaysPattern, buffered_pattern_match(rune, &state.days, days, LENGTH(days)));
 		TRY_MATCH(MonthsPattern, buffered_pattern_match(rune, &state.months, months, LENGTH(months)));
 	} while (*ptr);
+	TRY_MATCH(DatePattern, date_pattern_match(text));
 
 	buf = malloc(sizeof(match));
 	for (int i = 0; i < UnrecognisedPattern; i++) {
@@ -125,6 +127,10 @@ run_pattern(PatternType pat, int count, int startind, union sample_space samples
 	case NumberPattern:
 		MUST_BOUNDED(count);
 		number_pattern_run(full, count);
+		break;
+	case DatePattern:
+		MUST_BOUNDED(count);
+		date_pattern_run(samples, count);
 		break;
 	case DaysPattern:
 		buffered_pattern_run(samples, count, days, LENGTH(days));
