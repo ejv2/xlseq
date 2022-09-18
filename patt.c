@@ -29,7 +29,7 @@ string_pattern_run(union sample_space samples, int count)
 	const char *walk;
 
 	for (walk = samples.ordered.last; *walk; walk++) {
-		ind = walk-samples.ordered.last;
+		ind = walk - samples.ordered.last;
 		if (!samples.ordered.middle[ind])
 			break;
 		else if (samples.ordered.middle[ind] != *walk) {
@@ -59,7 +59,7 @@ string_pattern_run(union sample_space samples, int count)
 		free(buf);
 	} else {
 		for (i = 0; i < count; i++) {
-			printf("%s ", samples.samples[1-i%2]);
+			printf("%s ", samples.samples[1 - i % 2]);
 		}
 	}
 }
@@ -97,7 +97,8 @@ number_pattern_run(struct full_sample samples, int count)
 
 	sq = sspec_analyze(isamp, samples.len);
 	if (!sq) {
-		fputs("xlseq: no valid arithmetic sequence determined\n", stderr);
+		fputs("xlseq: no valid arithmetic sequence determined\n",
+		      stderr);
 		return;
 	}
 
