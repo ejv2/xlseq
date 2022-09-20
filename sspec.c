@@ -36,7 +36,7 @@ static int analyze_diffs(const long *seq, size_t len, size_t space, unsigned cha
 	long diffs[space];
 
 	(*iters)++;
-	if (*iters > 255 || space < 2) {
+	if (*iters == 255 || space < 2) {
 		*errf = 1;
 		return 0;
 	}
