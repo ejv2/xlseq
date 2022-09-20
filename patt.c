@@ -208,16 +208,16 @@ buffered_pattern_match(const wchar_t rune, struct buffered_matcher_state *state,
 }
 
 void
-buffered_pattern_run(union sample_space samples, unsigned long count,
+buffered_pattern_run(union sample_space samples, long count,
 		     const struct long_short *dataset, size_t datalen)
 {
-	unsigned long i;
+	long i;
+	unsigned long u, dind = 0;
 	const wchar_t *out;
 	const char *work = samples.ordered.last;
 	const struct long_short *cur;
 	int uselong;
 	int rlen, rind = 0;
-	unsigned int dind = 0;
 	int arglen = strlen(samples.ordered.last);
 	wchar_t decode[arglen + 1];
 
@@ -233,8 +233,8 @@ buffered_pattern_run(union sample_space samples, unsigned long count,
 	} while (*work);
 	decode[rind] = 0;
 
-	for (i = 0; i < datalen; i++) {
-		cur = &dataset[i];
+	for (u = 0; u < datalen; u++) {
+		cur = &dataset[u];
 		if (wcscasecmp(cur->l, decode) == 0) {
 			uselong = 1;
 			break;
@@ -243,7 +243,7 @@ buffered_pattern_run(union sample_space samples, unsigned long count,
 			break;
 		}
 	}
-	dind = i;
+	dind = u;
 	if (count <= 0)
 		count = datalen - 1 - (cur - dataset);
 

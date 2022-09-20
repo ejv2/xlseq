@@ -23,7 +23,7 @@ int buffered_pattern_match(const wchar_t rune,
 			   struct buffered_matcher_state *state,
 			   const struct long_short *dataset,
 			   size_t datalen);
-void buffered_pattern_run(union sample_space samples, unsigned long count,
+void buffered_pattern_run(union sample_space samples, long count,
 			  const struct long_short *dataset,
 			  size_t datalen);
 
