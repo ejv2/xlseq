@@ -139,10 +139,11 @@ void
 date_pattern_run(union sample_space samples, unsigned long count)
 {
 	unsigned long i;
+	unsigned long parsed0 = 0, parsed1 = 0;
 	time_t ts, diff, start;
 	struct tm tm0, tm1, tmp;
-	int parsed0 = 0, parsed1 = 0;
 	const char *cmp;
+	char buf[BUFSIZ];
 
 	ts = time(NULL);
 	tm0 = tm1 = *localtime(&ts);
@@ -151,14 +152,14 @@ date_pattern_run(union sample_space samples, unsigned long count)
 		if (!parsed0) {
 			cmp = strptime(samples.ordered.middle, datefmt[i], &tm0);
 			if (cmp && *cmp == 0) {
-				parsed0++;
+				parsed0 = i;
 			}
 		}
 
 		if (!parsed1) {
 			cmp = strptime(samples.ordered.last, datefmt[i], &tm1);
 			if (cmp && *cmp == 0) {
-				parsed1++;
+				parsed1 = i;
 			}
 		}
 	}
@@ -175,7 +176,11 @@ date_pattern_run(union sample_space samples, unsigned long count)
 	for (i = 0; i < count; i++) {
 		start += diff;
 		tmp = *localtime(&start);
-		printf("%d-%02d-%02d %02d:%02d:%02d ", tmp.tm_year + 1900, tmp.tm_mon + 1, tmp.tm_mday, tmp.tm_hour, tmp.tm_min, tmp.tm_sec);
+		if (!strftime(buf, BUFSIZ, datefmt[parsed1], &tmp)) {
+			fputs("xlseq: warning: time truncated\n", stderr);
+			continue;
+		}
+		printf("%s ", buf);
 	}
 }
 
