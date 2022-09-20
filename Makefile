@@ -7,7 +7,7 @@ OBJ = ${SRC:.c=.o}
 HDR = arg.h sspec.h
 EXE = xlseq
 
-CFLAGS = -Wall -Wpedantic
+CFLAGS = -Wall -Wpedantic -Wextra
 include config.mk
 
 ${EXE}: ${OBJ}
