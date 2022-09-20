@@ -117,7 +117,7 @@ type_detect(const char *first, const char *second)
 }
 
 int
-run_pattern(PatternType pat, int count, int startind, union sample_space samples, struct full_sample full)
+run_pattern(PatternType pat, int count, union sample_space samples, struct full_sample full)
 {
 	switch (pat) {
 	case StringPattern:
@@ -154,7 +154,7 @@ main(int argc, char **argv)
 	struct full_sample full;
 	union sample_space samples;
 	PatternType type = UnrecognisedPattern;
-	int i, startind, success;
+	int i, success;
 	int subcount = 0, count = -1;
 
 	setlocale(LC_ALL, "");
@@ -172,7 +172,7 @@ main(int argc, char **argv)
 	case 'h':
 	case 'u':
 		usage();
-		/* NOTREACHED */
+		break;
 	case 'v':
 		printf("xlseq v%s\n", VERSION);
 		return 1;
@@ -207,13 +207,12 @@ main(int argc, char **argv)
 			(argc > 2) ? argv[argc-3] : NULL
 		}
 	};
-	startind = (argc > 2) ? argc-2 : argc-1;
 
 	/* print sample set */
 	for (i = 0; i < argc; i++) {
 		printf("%s ", argv[i]);
 	}
-	success = run_pattern(type, count, startind, samples, full);
+	success = run_pattern(type, count, samples, full);
 	putchar('\n');
 	return success;
 }
