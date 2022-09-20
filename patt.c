@@ -14,7 +14,7 @@
 #include "xlseq.h"
 
 int
-string_pattern_match(const wchar_t rune)
+string_pattern_match()
 {
 	return 1;
 }

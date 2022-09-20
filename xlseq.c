@@ -68,7 +68,7 @@ _type_detect(const char *text)
 		}
 		ptr += count;
 
-		TRY_MATCH(StringPattern, string_pattern_match(rune));
+		TRY_MATCH(StringPattern, string_pattern_match());
 		TRY_MATCH(NumberPattern, number_pattern_match(rune));
 		TRY_MATCH(DaysPattern, buffered_pattern_match(rune, &state.days, days, LENGTH(days)));
 		TRY_MATCH(MonthsPattern, buffered_pattern_match(rune, &state.months, months, LENGTH(months)));

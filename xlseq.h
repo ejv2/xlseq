@@ -32,7 +32,7 @@ struct string_pattern_state {
 	int common_check;
 	const char *common_end;	/* NULL if no common section discovered */
 };
-int string_pattern_match(const wchar_t rune);
+int string_pattern_match();
 void string_pattern_run(union sample_space samples, int count);
 
 /* number pattern */
