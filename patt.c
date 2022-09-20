@@ -211,7 +211,7 @@ buffered_pattern_run(union sample_space samples, int count,
 	int rlen, rind = 0;
 	unsigned int dind = 0;
 	int arglen = strlen(samples.ordered.last);
-	wchar_t decode[arglen];
+	wchar_t decode[arglen + 1];
 
 	memset(decode, 0, sizeof(wchar_t) * arglen);
 	do {
