@@ -23,7 +23,7 @@ int buffered_pattern_match(const wchar_t rune,
 			   struct buffered_matcher_state *state,
 			   const struct long_short *dataset,
 			   size_t datalen);
-void buffered_pattern_run(union sample_space samples, int count,
+void buffered_pattern_run(union sample_space samples, unsigned long count,
 			  const struct long_short *dataset,
 			  size_t datalen);
 
@@ -33,11 +33,11 @@ struct string_pattern_state {
 	const char *common_end;	/* NULL if no common section discovered */
 };
 int string_pattern_match();
-void string_pattern_run(union sample_space samples, int count);
+void string_pattern_run(union sample_space samples, unsigned long count);
 
 /* number pattern */
 int number_pattern_match(const wchar_t rune);
-void number_pattern_run(struct full_sample samples, int count);
+void number_pattern_run(struct full_sample samples, unsigned long count);
 
 /* date pattern */
 static const char *datefmt[] = {
@@ -48,7 +48,7 @@ static const char *datefmt[] = {
 	"%F",
 };
 int date_pattern_match(const char *in);
-void date_pattern_run(union sample_space samples, int count);
+void date_pattern_run(union sample_space samples, unsigned long count);
 
 /* days pattern */
 static const struct long_short days[] = {

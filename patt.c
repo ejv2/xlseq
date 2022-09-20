@@ -20,9 +20,9 @@ string_pattern_match()
 }
 
 void
-string_pattern_run(union sample_space samples, int count)
+string_pattern_run(union sample_space samples, unsigned long count)
 {
-	int i;
+	unsigned long i;
 	long suffix;
 	size_t ind;
 	const char *cend = NULL;
@@ -50,7 +50,7 @@ string_pattern_run(union sample_space samples, int count)
 		}
 		strncpy(buf, samples.ordered.last, cend - samples.ordered.last);
 
-		for (int i = 0; i < count; i++) {
+		for (i = 0; i < count; i++) {
 			if (suffix) {
 				printf("%s%ld%s ", buf, ++suffix, endptr);
 			} else {
@@ -72,10 +72,10 @@ number_pattern_match(const wchar_t rune)
 }
 
 void
-number_pattern_run(struct full_sample samples, int count)
+number_pattern_run(struct full_sample samples, unsigned long count)
 {
 	sspec_t *sq;
-	int i;
+	unsigned long i;
 	long isamp[samples.len], obuf[count];
 	long diff;
 
@@ -116,7 +116,8 @@ number_pattern_run(struct full_sample samples, int count)
 int
 date_pattern_match(const char *in)
 {
-	int i, any = 0;
+	unsigned long i;
+	char any = 0;
 	time_t ts;
 	struct tm tm;
 	const char *cmp;
@@ -135,9 +136,9 @@ date_pattern_match(const char *in)
 }
 
 void
-date_pattern_run(union sample_space samples, int count)
+date_pattern_run(union sample_space samples, unsigned long count)
 {
-	int i;
+	unsigned long i;
 	time_t ts, diff, start;
 	struct tm tm0, tm1, tmp;
 	int parsed0 = 0, parsed1 = 0;
@@ -182,6 +183,8 @@ int
 buffered_pattern_match(const wchar_t rune, struct buffered_matcher_state *state,
 		       const struct long_short *dataset, size_t datalen)
 {
+	unsigned long i;
+
 	if (state->bufpos >= BUFSIZ - 1) {
 		return 0;
 	}
@@ -189,7 +192,7 @@ buffered_pattern_match(const wchar_t rune, struct buffered_matcher_state *state,
 	state->buf[state->bufpos++] = towlower(rune);
 	state->buf[state->bufpos] = 0;
 
-	for (int i = 0; i < datalen; i++) {
+	for (i = 0; i < datalen; i++) {
 		if (wcsncmp(state->buf, dataset[i].l, state->bufpos) == 0 ||
 		    wcsncmp(state->buf, dataset[i].s, state->bufpos) == 0) {
 			return 1;
@@ -200,10 +203,10 @@ buffered_pattern_match(const wchar_t rune, struct buffered_matcher_state *state,
 }
 
 void
-buffered_pattern_run(union sample_space samples, int count,
+buffered_pattern_run(union sample_space samples, unsigned long count,
 		     const struct long_short *dataset, size_t datalen)
 {
-	int i;
+	unsigned long i;
 	const wchar_t *out;
 	const char *work = samples.ordered.last;
 	const struct long_short *cur;
