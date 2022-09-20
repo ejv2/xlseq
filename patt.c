@@ -108,6 +108,8 @@ number_pattern_run(struct full_sample samples, int count)
 	for (i = 0; i < count; i++) {
 		printf("%ld ", obuf[i]);
 	}
+
+	free(sq);
 }
 
 /* NOTE: not a normal matcher - called once and overrides any other matches */
