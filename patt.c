@@ -202,8 +202,12 @@ void alphabet_pattern_run(union sample_space samples, long count)
 
 	cur = samples.ordered.last[0];
 	diff = samples.ordered.last[0] - samples.ordered.middle[0];
-	if (count <= 0)
-		count = max - cur;
+	if (count <= 0) {
+		if (diff > 0)
+			count = (max - cur) / diff;
+		else
+			count = +(min - cur) / diff;
+	}
 
 	for (i = 0; i < count; i++) {
 		cur += diff;
