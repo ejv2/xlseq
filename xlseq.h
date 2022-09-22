@@ -76,3 +76,14 @@ static const struct long_short months[] = {
 	{L"november", L"nov"},
 	{L"december", L"dec"}
 };
+
+/* colors pattern */
+static const struct long_short colors[] = {
+	{L"red", L"r"},
+	{L"orange", L"o"},
+	{L"yellow", L"y"},
+	{L"green", L"g"},
+	{L"blue", L"b"},
+	{L"indigo", L"i"},
+	{L"violet", L"v"},
+};
