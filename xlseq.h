@@ -51,7 +51,11 @@ int date_pattern_match(const char *in);
 void date_pattern_run(union sample_space samples, unsigned long count);
 
 /* alphabet pattern */
-int alphabet_pattern_match(const wchar_t rune);
+struct alpha_matcher_state {
+	int arg, ind;
+};
+int alphabet_pattern_match(const wchar_t rune,
+			   struct alpha_matcher_state *state, int arg);
 void alphabet_pattern_run(union sample_space samples, long count);
 
 /* days pattern */
