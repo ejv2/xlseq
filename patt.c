@@ -184,6 +184,33 @@ date_pattern_run(union sample_space samples, unsigned long count)
 	}
 }
 
+int alphabet_pattern_match(const wchar_t rune)
+{
+	return iswalpha(rune);
+}
+
+void alphabet_pattern_run(union sample_space samples, long count)
+{
+	wchar_t cur, diff;
+	long i;
+	const wchar_t min = (iswupper(samples.ordered.last[0])) ? 'A' : 'a';
+	const wchar_t max = (iswupper(samples.ordered.last[0])) ? 'Z' : 'z';
+
+	cur = samples.ordered.last[0];
+	diff = samples.ordered.last[0] - samples.ordered.middle[0];
+	if (count <= 0)
+		count = max - cur;
+
+	for (i = 0; i < count; i++) {
+		cur += diff;
+		if (cur < min)
+			cur = max;
+		else if (cur > max)
+			cur = min;
+		printf("%lc ", cur);
+	}
+}
+
 int
 buffered_pattern_match(const wchar_t rune, struct buffered_matcher_state *state,
 		       const struct long_short *dataset, size_t datalen)

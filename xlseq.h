@@ -50,6 +50,10 @@ static const char *datefmt[] = {
 int date_pattern_match(const char *in);
 void date_pattern_run(union sample_space samples, unsigned long count);
 
+/* alphabet pattern */
+int alphabet_pattern_match(const wchar_t rune);
+void alphabet_pattern_run(union sample_space samples, long count);
+
 /* days pattern */
 static const struct long_short days[] = {
 	{L"monday", L"mon"},

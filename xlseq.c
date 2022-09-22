@@ -25,6 +25,7 @@ typedef enum {
 	DaysPattern,
 	MonthsPattern,
 	ColorsPattern,
+	AlphabetPattern,
 
 	UnrecognisedPattern	/* should never happen;
 				   used to terminate the buffer */
@@ -74,6 +75,7 @@ _type_detect(const char *text)
 		TRY_MATCH(NumberPattern, number_pattern_match(rune));
 		TRY_MATCH(DaysPattern, buffered_pattern_match(rune, &state.days, days, LENGTH(days)));
 		TRY_MATCH(MonthsPattern, buffered_pattern_match(rune, &state.months, months, LENGTH(months)));
+		TRY_MATCH(AlphabetPattern, alphabet_pattern_match(rune));
 		TRY_MATCH(ColorsPattern, buffered_pattern_match(rune, &state.colors, colors, LENGTH(colors)));
 	} while (*ptr);
 	TRY_MATCH(DatePattern, date_pattern_match(text));
@@ -140,6 +142,9 @@ run_pattern(PatternType pat, int count, union sample_space samples, struct full_
 		break;
 	case MonthsPattern:
 		buffered_pattern_run(samples, count, months, LENGTH(months));
+		break;
+	case AlphabetPattern:
+		alphabet_pattern_run(samples, count);
 		break;
 	case ColorsPattern:
 		buffered_pattern_run(samples, count, colors, LENGTH(colors));
