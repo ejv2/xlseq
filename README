@@ -4,7 +4,7 @@ xlseq - excel-style sequence generator
 xlseq will detect and continue an arbitrarily formatted sequence or pattern. For
 example:
 	$ xlseq -n4 "9:00 AM" "10:10 AM"
-	9:00 AM 10:10 AM 11:20 AM 12:30 AM
+	9:00 AM 10:10 AM 11:20 AM 12:30 PM
 
 	$ xlseq mon tue
 	mon tue wed thur fri sat sun
