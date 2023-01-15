@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include <math.h>
 
 typedef struct {
@@ -17,7 +18,7 @@ typedef struct {
 	size_t seqlen;
 
 	struct {
-		long diffs[255];
+		long diffs[UCHAR_MAX];
 	} state;
 } sspec_t;
 
@@ -36,7 +37,7 @@ static int analyze_diffs(const long *seq, size_t len, size_t space, unsigned cha
 	long diffs[space];
 
 	(*iters)++;
-	if (*iters == 255 || space < 2) {
+	if (*iters == UCHAR_MAX || space < 2) {
 		*errf = 1;
 		return 0;
 	}
