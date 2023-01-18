@@ -1,4 +1,4 @@
-/* Source: https://github.com/ethanv2/seqspec */
+/* Source: https://github.com/ejv2/seqspec */
 
 /*
  * seqspec - analyze and continue arbitrary sequences of any order
