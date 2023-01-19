@@ -184,7 +184,8 @@ date_pattern_run(union sample_space samples, unsigned long count)
 	}
 }
 
-int alphabet_pattern_match(const wchar_t rune,
+int
+alphabet_pattern_match(const wchar_t rune,
 			   struct alpha_matcher_state *state, int arg)
 {
 	/* do not accept arguments of multiple chars */
@@ -193,7 +194,8 @@ int alphabet_pattern_match(const wchar_t rune,
 	return iswalpha(rune);
 }
 
-void alphabet_pattern_run(union sample_space samples, long count)
+void
+alphabet_pattern_run(union sample_space samples, long count)
 {
 	wchar_t cur, diff;
 	long i;
