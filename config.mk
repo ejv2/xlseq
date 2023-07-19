@@ -1,5 +1,5 @@
-# uwp version
-VERSION = 0.0.1
+# program version
+VERSION = 1.0.0
 
 # Customize the below to fit your system
 PREFIX = /usr/local
